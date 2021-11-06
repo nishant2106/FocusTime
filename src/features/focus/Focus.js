@@ -1,40 +1,53 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { RoundedButton } from '../../components/RoundedButton';
+import React, { useState } from "react";
+import { Text, StyleSheet, View } from "react-native";
+import { TextInput } from "react-native-paper";
+import { RoundedButton } from "../../components/RoundedButton";
+import { fontSizes, spacing } from "../../utils/sizes";
+import { colors } from "../../utils/colors";
 
-export const Focus = () => {
+export const Focus = ({ addSubject }) => {
+  const [subject, setSubject] = useState(null);
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style = {styles.title}>What would you like to focus on?</Text>
-        <View style = {styles.inputContainer}>
-          <TextInput style = {{flex:1,marginRight:20}}/>
-          <RoundedButton size={50} title = "+" />
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}>What would you like to focus on?</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={{ flex: 1, marginRight: spacing.md }}
+            value={subject}
+            onChangeText={(subject) => setSubject(subject)}
+          />
+          <RoundedButton
+            size={50}
+            title="+"
+            onPress={() => {
+              addSubject(subject);
+            }}
+          />
         </View>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  },
-  titleContainer: {
     flex: 0.5,
-    padding: 16,
-    justifyContent: 'center'
-
+  },
+  innerContainer: {
+    flex: 1,
+    padding: spacing.md,
+    justifyContent: "center",
   },
   title: {
-    color:  "white",
+    color: colors.white,
     fontWeight: "bold",
-    fontSize: 24
+    fontSize: fontSizes.lg,
   },
   inputContainer: {
-    paddingTop:20,
-    flexDirection: "row"
-  }
+    paddingTop: spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+  },
 });
