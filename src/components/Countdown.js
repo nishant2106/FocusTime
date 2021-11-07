@@ -7,37 +7,44 @@ const minutesToMillis = (min) => min * 1000 * 60;
 const formatTime = (time) => (time < 10 ? `0${time}` : time);
 
 export const Countdown = ({
-    minutes = 1,
-    isPaused 
+    minutes = 0.6,
+    isPaused,
+    onProgress,
+    onEnd
 }) => {
     
     const interval = React.useRef(null)
+    const [millis, setMillis] = useState(null);
+
+    const minute = Math.floor(millis / 1000 / 60) % 60;
+    const seconds = Math.floor(millis / 1000) % 60;
+
+    const countdown = () => { 
+        setMillis((time) => {
+            if(time === 0){
+                clearInterval(interval.current)
+                onEnd();
+                return time;
+            }
+            const timeLeft = time - 1000
+            onProgress(timeLeft / minutesToMillis(minutes))
+            return timeLeft
+        })
+    }
+    useEffect(() => {
+        setMillis(minutesToMillis(minutes))
+    },[minutes])
 
     useEffect(() => {
         if(isPaused){ 
-            console.log( isPaused )
+            if(interval.current) clearInterval(interval.current)
             return 
         }
         interval.current = setInterval(countdown, 1000)
         return () => clearInterval(interval.current)
     },[isPaused])
 
-    const countdown = () => { 
-        setMillis((time) => {
-            if(time === 0){
-                // do stuff here
-                return time;
-            }
-            const timeLeft = time - 100
-            // report the progress
-            return timeLeft
-        })
-    }
 
-    const [millis, setMillis] = useState(minutesToMillis(minutes));
-
-    const minute = Math.floor(millis / 100 / 60) % 60;
-    const seconds = Math.floor(millis / 100) % 60;
     return (
         <Text style={styles.text}>{formatTime(minute)}:{formatTime(seconds)}</Text>
     )
@@ -50,5 +57,10 @@ const styles = StyleSheet.create({
         color: colors.white,
         padding: spacing.lg,
         backgroundColor: 'rgba(94,132,226,0.3)'
-    }
+    },
+    countdown: {
+        flex: 0.5,
+        alignItems: "center",
+        justifyContent: "center",
+      },
 })
